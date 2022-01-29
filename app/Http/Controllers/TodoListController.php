@@ -19,7 +19,7 @@ class TodoListController extends Controller
     {
         // se ti arriva dalla request un input per_page prendilo come limit per la paginazione 
         // altrimenti setta limit a 10
-        $limit = $request->per_page ?? 10;
+        $limit = $request->per_page ?? 50;
         return TodoList::select(['id','name','user_id'])
                         ->orderBy('id','DESC')
                         ->paginate($limit);

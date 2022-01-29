@@ -19,6 +19,8 @@ return [
 
     'allowed_methods' => ['*'],
 
+    // do accesso al backend soltanto all'app frontend
+    //'allowed_origins' => ['http://localhost:3000/*'],
     'allowed_origins' => ['*'],
 
     'allowed_origins_patterns' => [],
