@@ -6,8 +6,6 @@ namespace App\Http\Controllers;
 use Illuminate\Contracts\Support\Jsonable;
 
 use App\Models\TodoList;
-use App\Http\Requests\StoreTodoListRequest;
-use App\Http\Requests\UpdateTodoListRequest;
 use Illuminate\Http\Request;
 
 class TodoListController extends Controller
@@ -90,12 +88,18 @@ class TodoListController extends Controller
         //se nella request è presente forceDelete=1
         if($request->forceDelete){
             //con la private func forceDestroy elimina fisicamente
+            return $this->forceDestroy($list);
         }
         //altrimenti softDelete
         $res = $list->delete();
         return $this->getResult($list, $res, 'Lista eliminata');
     }
-
+    //funzione privata per la cancellazione definitiva del record
+    private function forceDestroy(TodoList $list)
+    {
+        $res = $list->forceDelete();
+        return $this->getResult($list, $res, 'Lista eliminata definitivamente!');
+    }
     //creo una funzione privata per strutturare una risposta più leggibile dei dati
     private function getResult(Jsonable $data,$success=true,$message='') {
         return [
