@@ -21,7 +21,7 @@ class TodoController extends Controller
         //recupero dalla request list id e limit se presenti
         $list_id = $request->list_id ?? 1;
         $limit = $request->per_page ?? 10;
-        return Todo::select(['id','name','list_id'])
+        return Todo::select(['id','name','list_id','completed'])
                     //recupero i todos di una lista specifica
                     ->where('list_id',$list_id)
                     ->orderBy('id','DESC')
@@ -70,7 +70,7 @@ class TodoController extends Controller
         $todo->name = $request->name ?? $todo->name;
         $todo->duedate = $request->duedate ?? $todo->duedate;
         $todo->list_id = $request->list_id ?? $todo->list_id;
-        //$todo->completed = $request->completed;
+        $todo->completed = $request->completed?? $todo->completed;
         $res = $todo->save();
         return $this->getResult($todo,$res,'Todo aggiornato');
     }
