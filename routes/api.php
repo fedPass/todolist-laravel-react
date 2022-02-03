@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{TodoListController,TodoController};
+use App\Http\Controllers\{TodoListController,TodoController, AuthController};
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +13,20 @@ use App\Http\Controllers\{TodoListController,TodoController};
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'auth'
+
+], function ($router) {
+
+    Route::post('login', [AuthController::class,'login']);
+    Route::post('logout', [AuthController::class,'logout']);
+    Route::post('refresh', [AuthController::class,'refresh']);
+    Route::post('me', [AuthController::class,'me']);
+
+});
 
 Route::resource('lists',TodoListController::class);
 Route::resource('todos',TodoController::class);
