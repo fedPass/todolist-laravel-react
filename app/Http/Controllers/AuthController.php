@@ -4,6 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Contracts\Support\Jsonable;
 
 class AuthController extends Controller
 {
@@ -14,7 +20,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login','register']]);
     }
 
     /**
@@ -31,6 +37,33 @@ class AuthController extends Controller
         }
 
         return $this->respondWithToken($token);
+    }
+
+    public function register(Request $request) {
+        //verifico i campi ricevuti
+        $data = $request->validate([
+            //bail ->stop running validation rules after the first validation failure
+            //unique:'table'-> validate if values are unique in a given database table
+            //confirmed-> The field must have a matching field of {field}_confirmation.
+            //between:min,max -> The field must have a size between the given min and max.
+            'name' => 'required|string| between:3,50|bail',
+            'email' => 'required|email|unique:users|bail',
+            'password' => 'required|min:5|confirmed|bail'
+        ]);
+        //hash password
+        $data['password'] = Hash::make($data['password']);
+        //try and catch per salvare o catturare eccezioni
+        //try {
+            $user = User::create($data);
+            //se ho creato correttamente allora creo anche token
+            //accedo alla classe auth e al metodo login e gli passo l'user appena creato
+            $token = auth()->login($user);
+            //faccio return del token
+            return $this->respondWithToken($token);
+        //} catch (Exception $error) {
+         //   return $error->getMessage();
+        //}
+
     }
 
     /**
