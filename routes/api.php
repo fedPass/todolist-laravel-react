@@ -29,5 +29,6 @@ Route::group([
 
 });
 
-Route::resource('lists',TodoListController::class);
-Route::resource('todos',TodoController::class);
+//aggiungo i middleware alle risorse così verrà inviato il token quando verranno inviate delle richieste
+Route::resource('lists',TodoListController::class)->middleware(['auth:api']);
+Route::resource('todos',TodoController::class)->middleware(['auth:api']);
